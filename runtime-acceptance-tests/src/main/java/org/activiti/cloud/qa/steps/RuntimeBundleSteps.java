@@ -23,6 +23,7 @@ import java.util.Map;
 import net.thucydides.core.annotations.Step;
 import org.activiti.cloud.qa.model.ProcessInstance;
 import org.activiti.cloud.qa.model.Task;
+import org.activiti.cloud.qa.model.commands.CreateTaskCmd;
 import org.activiti.cloud.qa.rest.feign.EnableRuntimeFeignContext;
 import org.activiti.cloud.qa.service.RuntimeBundleService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -101,5 +102,18 @@ public class RuntimeBundleSteps {
     @Step
     public void waitForMessagesToBeConsumed() throws InterruptedException {
         Thread.sleep(200);
+    }
+
+    @Step
+    public Task createNewTask() {
+        return runtimeBundleService.createNewTask(new CreateTaskCmd("new-task",
+                                                                    "task-description",
+                                                                    null,
+                                                                    "CreateTaskCmd"));
+    }
+
+    @Step
+    public Task getTaskById(String id) {
+        return runtimeBundleService.getTaskById(id);
     }
 }
