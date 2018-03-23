@@ -24,9 +24,12 @@ import org.activiti.cloud.qa.model.EventType;
 import org.activiti.cloud.qa.model.ProcessInstance;
 import org.activiti.cloud.qa.model.QueryStatus;
 import org.activiti.cloud.qa.model.Task;
+import org.activiti.cloud.qa.rest.error.ExpectRestError;
 import org.activiti.cloud.qa.steps.AuditSteps;
 import org.activiti.cloud.qa.steps.QuerySteps;
 import org.activiti.cloud.qa.steps.RuntimeBundleSteps;
+import org.jbehave.core.annotations.Alias;
+import org.jbehave.core.annotations.Given;
 import org.jbehave.core.annotations.Then;
 import org.jbehave.core.annotations.When;
 
@@ -90,8 +93,9 @@ public class ProcessInstanceTasks {
                                                  EventType.TASK_COMPLETED);
     }
 
-    @When("cancel the process")
-    public void cancelProcessInstance() throws Exception {
+    @When("the user cancel the process")
+    @Alias("cancel the process")
+    public void cancelCurrentProcessInstance() throws Exception {
         runtimeBundleSteps.deleteProcessInstance(processInstance.getId());
     }
 
@@ -113,6 +117,23 @@ public class ProcessInstanceTasks {
     @Then("the digram is shown")
     public void checkProcessInstanceDiagram() throws Exception {
         runtimeBundleSteps.checkProcessInstanceDiagram(processInstanceDiagram);
+    }
+
+    @Given("any suspended process instance")
+    public void suspendCurrentProcessInstance() {
+        processInstance = runtimeBundleSteps.startProcess();
+        runtimeBundleSteps.suspendProcessInstance(processInstance.getId());
+    }
+
+    @When("activate the process")
+    public void activateCurrentProcessInstance() {
+        runtimeBundleSteps.suspendProcessInstance(processInstance.getId());
+    }
+
+    @Then("the process cannot be activated anymore")
+    @ExpectRestError("Unable to find process instance for the given id")
+    public void cannotActivateProcessInstance() {
+        runtimeBundleSteps.suspendProcessInstance(processInstance.getId());
     }
 
 }

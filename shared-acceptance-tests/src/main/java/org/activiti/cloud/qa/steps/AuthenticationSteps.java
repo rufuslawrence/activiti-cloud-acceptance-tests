@@ -17,9 +17,6 @@
 package org.activiti.cloud.qa.steps;
 
 import java.io.IOException;
-import java.util.Map;
-
-import javax.annotation.PostConstruct;
 
 import net.serenitybdd.core.Serenity;
 import net.thucydides.core.annotations.Step;

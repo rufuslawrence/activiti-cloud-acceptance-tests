@@ -63,7 +63,7 @@ public class RuntimeBundleSteps {
     }
 
     @Step
-    public ProcessInstance startProcess() throws IOException {
+    public ProcessInstance startProcess() {
 
         ProcessInstance processInstance = new ProcessInstance();
         processInstance.setCommandType(DEFAULT_PROCCES_INSTANCE_COMMAND_TYPE);
@@ -122,6 +122,16 @@ public class RuntimeBundleSteps {
     public void checkProcessInstanceDiagram(String diagram) throws Exception {
         assertThat(diagram).isNotEmpty();
         assertThat(svgToPng(diagram.getBytes())).isNotEmpty();
+    }
+
+    @Step
+    public void suspendProcessInstance(String processInstanceId) {
+        runtimeBundleService.suspendProcess(processInstanceId);
+    }
+
+    @Step
+    public void activateProcessInstance(String processInstanceId) {
+        runtimeBundleService.activateProcess(processInstanceId);
     }
 
     private byte[] svgToPng(byte[] streamBytes)
